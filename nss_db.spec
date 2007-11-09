@@ -2,7 +2,7 @@
 %define version	2.2.3
 %define pre	pre1
 %define	arcver %{version}%{pre}
-%define release %mkrel 0.%{pre}.3
+%define release %mkrel 0.%{pre}.4
 
 %define build_compat	0
 # Allow --with[out] compat rpm command line build
