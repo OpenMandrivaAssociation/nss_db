@@ -29,7 +29,7 @@ License:	GPL
 Group:		System/Libraries
 Requires(pre):	/sbin/ldconfig
 Requires:	make
-BuildRequires:	db_nss-devel >= 4.2.52-5mdk
+BuildRequires:	db_nss-devel >= 4.2.52-5mdk db-devel
 %if %{build_compat}
 %else
 Obsoletes:	%{name}-compat
