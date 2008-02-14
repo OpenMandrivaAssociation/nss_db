@@ -27,6 +27,7 @@ Patch5:		nss_db-2.2-initialize.patch.bz2
 Patch10:	nss_db-2.2-compat.patch.bz2
 License:	GPL
 Group:		System/Libraries
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 Requires(pre):	/sbin/ldconfig
 Requires:	make
 BuildRequires:	db_nss-devel >= 4.2.52-5mdk db-devel
