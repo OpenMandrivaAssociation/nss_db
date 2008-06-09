@@ -107,9 +107,13 @@ rm -rf %{buildroot}
 %{_mandir}/man1/makedb.1*
 /var/lib/misc/Makefile
 
+%if %mdkversion < 200900
 %post -p /sbin/ldconfig
+%endif
 
+%if %mdkversion < 200900
 %postun -p /sbin/ldconfig
+%endif
 
 %if %{build_compat}
 
@@ -117,9 +121,13 @@ rm -rf %{buildroot}
 %defattr(-,root,root)
 /%{_lib}/libnss_db*1*
 
+%if %mdkversion < 200900
 %post compat -p /sbin/ldconfig
+%endif
 
+%if %mdkversion < 200900
 %postun compat -p /sbin/ldconfig
+%endif
 
 %endif
 
