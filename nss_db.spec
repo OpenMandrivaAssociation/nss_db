@@ -28,7 +28,6 @@ Patch10:	nss_db-2.2-compat.patch.bz2
 License:	GPL
 Group:		System/Libraries
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
-Requires(pre):	/sbin/ldconfig
 Requires:	make
 BuildRequires:	db_nss-devel >= 4.2.52-5mdk db-devel
 %if %{build_compat}
@@ -49,7 +48,6 @@ slow.
 %package compat
 Summary: NSS compatibility library for DB
 Group: System/Libraries
-Requires(pre):	/sbin/ldconfig
 
 %description compat
 Nss_db-compat is a set of C library extensions which allow Berkeley Databases
