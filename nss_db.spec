@@ -2,7 +2,7 @@
 %define version	2.2.3
 %define pre	pre1
 %define	arcver %{version}%{pre}
-%define release %mkrel 0.%{pre}.4
+%define release %mkrel 0.%{pre}.5
 
 %define build_compat	0
 # Allow --with[out] compat rpm command line build
@@ -16,15 +16,15 @@ Name:		%{name}
 Version:	%{version}
 Release:	%{release}
 Source:		ftp://sources.redhat.com/pub/glibc/releases/nss_db-%{arcver}.tar.bz2
-Source1:	makedb.man.bz2
+Source1:	makedb.man
 URL:		http://sources.redhat.com/glibc/
-Patch0:		nss_db-2.2.3pre1-external.patch.bz2
-Patch1:		nss_db-2.2.3pre1-dbupgrade.patch.bz2
-Patch2:		nss_db-2.2.3pre1-dbopen.patch.bz2
-Patch3:		nss_db-2.2-paths.patch.bz2
-Patch4:		nss_db-2.2-enoent.patch.bz2
-Patch5:		nss_db-2.2-initialize.patch.bz2
-Patch10:	nss_db-2.2-compat.patch.bz2
+Patch0:		nss_db-2.2.3pre1-external.patch
+Patch1:		nss_db-2.2.3pre1-dbopen.patch
+Patch2:		nss_db-2.2.3pre1-dbupgrade.patch
+Patch3:		nss_db-2.2-paths.patch
+Patch4:		nss_db-2.2-enoent.patch
+Patch5:		nss_db-2.2-initialize.patch
+Patch10:	nss_db-2.2-compat.patch
 License:	GPL
 Group:		System/Libraries
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -60,8 +60,8 @@ programs linked against glibc 2.0.x.
 %prep
 %setup -q -n %{name}-%{arcver}
 %patch0 -p1 -b .external
-%patch1 -p0 -b .dbupgrade
-%patch2 -p1 -b .dbopen
+%patch1 -p1 -b .dbopen
+%patch2 -p0 -b .dbupgrade
 %patch3 -p1 -b .paths
 %patch4 -p1 -b .enoent
 %patch5 -p1 -b .initialize
@@ -94,7 +94,7 @@ cp -a db-Makefile %{buildroot}/var/lib/misc/Makefile
 %if %{build_compat}
 cp -a compat/.libs/libnss_db.so.[0-9]* %{buildroot}/%{_lib}
 %endif
-bzip2 -dc %{SOURCE1} > %{buildroot}%{_mandir}/man1/makedb.1
+install -m 644 %{SOURCE1} %{buildroot}%{_mandir}/man1/makedb.1
 
 %clean
 rm -rf %{buildroot}
@@ -109,9 +109,7 @@ rm -rf %{buildroot}
 
 %if %mdkversion < 200900
 %post -p /sbin/ldconfig
-%endif
 
-%if %mdkversion < 200900
 %postun -p /sbin/ldconfig
 %endif
 
@@ -123,11 +121,8 @@ rm -rf %{buildroot}
 
 %if %mdkversion < 200900
 %post compat -p /sbin/ldconfig
-%endif
 
-%if %mdkversion < 200900
 %postun compat -p /sbin/ldconfig
 %endif
 
 %endif
-
