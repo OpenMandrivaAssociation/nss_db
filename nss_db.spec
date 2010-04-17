@@ -2,7 +2,7 @@
 %define version	2.2.3
 %define pre	pre1
 %define	arcver %{version}%{pre}
-%define release %mkrel 0.%{pre}.7
+%define release %mkrel 0.%{pre}.8
 
 %define build_compat	0
 # Allow --with[out] compat rpm command line build
@@ -24,6 +24,7 @@ Patch2:		nss_db-2.2.3pre1-dbupgrade.patch
 Patch3:		nss_db-2.2-paths.patch
 Patch4:		nss_db-2.2-enoent.patch
 Patch5:		nss_db-2.2-initialize.patch
+Patch6:		nss_db-2.2.3pre1-CVE-2010-0826.diff
 Patch10:	nss_db-2.2-compat.patch
 License:	GPL
 Group:		System/Libraries
@@ -65,6 +66,7 @@ programs linked against glibc 2.0.x.
 %patch3 -p1 -b .paths
 %patch4 -p1 -b .enoent
 %patch5 -p1 -b .initialize
+%patch6 -p1 -b .CVE-2010-0826
 %if %{build_compat}
 cp -al src compat
 cd compat
