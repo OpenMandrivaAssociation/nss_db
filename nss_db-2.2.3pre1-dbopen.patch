@@ -1,0 +1,11 @@
+--- nss_db-2.2.3pre1/src/db-compat.c.dbopen	2001-04-30 03:07:41.000000000 +0200
++++ nss_db-2.2.3pre1/src/db-compat.c	2004-03-20 11:41:52.000000000 +0100
+@@ -39,7 +39,7 @@
+   if (err)
+     return err;
+ 
+-  err = db->open (db, file, NULL, type, flags, mode);
++  err = db->open (db, NULL, file, NULL, type, flags, mode);
+   if (err)
+     {
+       db->close (db, 0);

@@ -1,0 +1,14 @@
+diff -urN src/db-compat.c src/db-compat.c
+--- src/db-compat.c	Mon Mar 26 15:34:53 2001
++++ src/db-compat.c	Mon Mar 26 15:31:36 2001
+@@ -39,6 +39,10 @@
+   if (err)
+     return err;
+ 
++  /* Make sure we upgrade, in case this is an older database */
++  if (access(file, W_OK) == 0)
++    db->upgrade(db, file, 0);
++
+   err = db->open (db, NULL, file, NULL, type, flags, mode);
+   if (err)
+     {

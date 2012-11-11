@@ -1,0 +1,11 @@
+--- nss_db-2.2/db-Makefile.fred	Tue Aug  8 19:42:27 2000
++++ nss_db-2.2/db-Makefile	Tue Mar 20 09:48:21 2001
+@@ -21,7 +21,7 @@
+ DATABASES = $(wildcard /etc/passwd /etc/group /etc/ethers /etc/protocols \
+ 		       /etc/rpc /etc/services /etc/shadow /etc/netgroup)
+ 
+-VAR_DB = /var/db
++VAR_DB = /var/lib/misc
+ 
+ AWK = awk
+ MAKEDB = makedb --quiet

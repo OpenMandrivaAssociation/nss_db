@@ -1,0 +1,263 @@
+--- nss_db-compat/db-alias.c.compat	Tue Aug  8 18:47:33 2000
++++ nss_db-compat/db-alias.c	Wed Aug 16 12:33:23 2000
+@@ -85,7 +85,7 @@ _nss_db_endaliasent (void)
+    the result.  */
+ static enum nss_status
+ lookup (DBT *key, struct aliasent *result, char *buffer,
+-	size_t buflen, int *errnop)
++	size_t buflen)
+ {
+   enum nss_status status;
+   DBT value;
+@@ -95,10 +95,7 @@ lookup (DBT *key, struct aliasent *resul
+     {
+       status = internal_setent (_PATH_VARDB "aliases.db", &db);
+       if (status != NSS_STATUS_SUCCESS)
+-	{
+-	  *errnop = errno;
+-	  return status;
+-	}
++	return status;
+     }
+ 
+   value.flags = 0;
+@@ -114,7 +111,7 @@ lookup (DBT *key, struct aliasent *resul
+       if (buflen < key->size + 1)
+ 	{
+ 	no_more_room:
+-	  *errnop = ERANGE;
++	  __set_errno(ERANGE);
+ 	  return NSS_STATUS_TRYAGAIN;
+ 	}
+ 
+@@ -172,8 +169,7 @@ lookup (DBT *key, struct aliasent *resul
+ }
+ 
+ enum nss_status
+-_nss_db_getaliasent_r (struct aliasent *result, char *buffer, size_t buflen,
+-		       int *errnop)
++_nss_db_getaliasent_r (struct aliasent *result, char *buffer, size_t buflen)
+ {
+   /* Return next entry in alias file.  */
+   enum nss_status status;
+@@ -183,10 +179,7 @@ _nss_db_getaliasent_r (struct aliasent *
+   pthread_mutex_lock (&lock);
+   key.size = snprintf (key.data = buf, sizeof buf, "0%u", entidx++);
+   key.flags = 0;
+-  status = lookup (&key, result, buffer, buflen, errnop);
+-  if (status == NSS_STATUS_TRYAGAIN && *errnop == ERANGE)
+-    /* Give the user a chance to get the same entry with a larger buffer.  */
+-    --entidx;
++  status = lookup (&key, result, buffer, buflen);
+   pthread_mutex_unlock (&lock);
+ 
+   return status;
+@@ -195,7 +188,7 @@ _nss_db_getaliasent_r (struct aliasent *
+ 
+ enum nss_status
+ _nss_db_getaliasbyname_r (const char *name, struct aliasent *result,
+-			  char *buffer, size_t buflen, int *errnop)
++			  char *buffer, size_t buflen)
+ {
+   DBT key;
+   enum nss_status status;
+@@ -208,7 +201,7 @@ _nss_db_getaliasbyname_r (const char *na
+   key.flags = 0;
+ 
+   pthread_mutex_lock (&lock);
+-  status = lookup (&key, result, buffer, buflen, errnop);
++  status = lookup (&key, result, buffer, buflen);
+   pthread_mutex_unlock (&lock);
+ 
+   return status;
+--- nss_db-compat/db-netgrp.c.compat	Tue Aug  8 19:05:01 2000
++++ nss_db-compat/db-netgrp.c	Wed Aug 16 12:33:23 2000
+@@ -82,18 +82,16 @@ _nss_db_endnetgrent (void)
+ 
+ extern enum nss_status _nss_netgroup_parseline (char **cursor,
+ 						struct __netgrent *result,
+-						char *buffer, size_t buflen,
+-						int *errnop);
++						char *buffer, size_t buflen);
+ 
+ enum nss_status
+-_nss_db_getnetgrent_r (struct __netgrent *result, char *buffer, size_t buflen,
+-		       int *errnop)
++_nss_db_getnetgrent_r (struct __netgrent *result, char *buffer, size_t buflen)
+ {
+   int status;
+ 
+   pthread_mutex_lock (&lock);
+ 
+-  status = _nss_netgroup_parseline (&cursor, result, buffer, buflen, errnop);
++  status = _nss_netgroup_parseline (&cursor, result, buffer, buflen);
+ 
+   pthread_mutex_unlock (&lock);
+ 
+--- nss_db-compat/db-XXX.c.compat	Wed Aug  9 15:46:39 2000
++++ nss_db-compat/db-XXX.c	Wed Aug 16 12:33:23 2000
+@@ -103,7 +103,7 @@ CONCAT(_nss_db_end,ENTNAME) (void)
+ /* Do a database lookup for KEY.  */
+ static enum nss_status
+ lookup (DBT *key, struct STRUCTURE *result,
+-	void *buffer, size_t buflen, int *errnop H_ERRNO_PROTO EXTRA_ARGS_DECL)
++	void *buffer, size_t buflen H_ERRNO_PROTO EXTRA_ARGS_DECL)
+ {
+   char *p;
+   enum nss_status status;
+@@ -116,7 +116,6 @@ lookup (DBT *key, struct STRUCTURE *resu
+       status = internal_setent (DBFILE, &db);
+       if (status != NSS_STATUS_SUCCESS)
+ 	{
+-	  *errnop = errno;
+ 	  H_ERRNO_SET (NETDB_INTERNAL);
+ 	  return status;
+ 	}
+@@ -129,7 +128,6 @@ lookup (DBT *key, struct STRUCTURE *resu
+     {
+       if (err > 0)
+ 	{
+-	  *errnop = err;
+ 	  H_ERRNO_SET (NETDB_INTERNAL);
+ 	  status = NSS_STATUS_UNAVAIL;
+ 	}
+@@ -152,7 +150,6 @@ lookup (DBT *key, struct STRUCTURE *resu
+   else if (buflen < value.size)
+     {
+       /* No room to copy the data to.  */
+-      *errnop = ERANGE;
+       H_ERRNO_SET (NETDB_INTERNAL);
+       status = NSS_STATUS_TRYAGAIN;
+     }
+@@ -165,7 +162,7 @@ lookup (DBT *key, struct STRUCTURE *resu
+       while (isspace (*p))
+ 	++p;
+ 
+-      err = parse_line (p, result, buffer, buflen, errnop EXTRA_ARGS);
++      err = parse_line (p, result, buffer, buflen EXTRA_ARGS);
+ 
+       if (err == 0)
+ 	{
+@@ -219,7 +216,7 @@ lookup (DBT *key, struct STRUCTURE *resu
+ enum nss_status								      \
+ _nss_db_get##name##_r (proto,						      \
+ 		       struct STRUCTURE *result,			      \
+-		       char *buffer, size_t buflen, int *errnop H_ERRNO_PROTO)\
++		       char *buffer, size_t buflen H_ERRNO_PROTO)	      \
+ {									      \
+   DBT key;								      \
+   enum nss_status status;						      \
+@@ -228,8 +225,7 @@ _nss_db_get##name##_r (proto,						     
+   key.size = KEYPRINTF keypattern;					      \
+   key.flags = 0;							      \
+   pthread_mutex_lock (&lock);						      \
+-  status = lookup (&key, result, buffer, buflen, errnop H_ERRNO_ARG	      \
+-		   EXTRA_ARGS_VALUE);					      \
++  status = lookup (&key, result, buffer, buflen H_ERRNO_ARG EXTRA_ARGS_VALUE);\
+   pthread_mutex_unlock (&lock);					      \
+   return status;							      \
+ }
+@@ -242,7 +238,7 @@ _nss_db_get##name##_r (proto,						     
+ /* Return the next entry from the database file, doing locking.  */
+ enum nss_status
+ CONCAT(_nss_db_get,ENTNAME_r) (struct STRUCTURE *result, char *buffer,
+-			       size_t buflen, int *errnop H_ERRNO_PROTO)
++			       size_t buflen H_ERRNO_PROTO)
+ {
+   /* Return next entry in host file.  */
+   enum nss_status status;
+@@ -257,13 +253,12 @@ CONCAT(_nss_db_get,ENTNAME_r) (struct ST
+     {
+       key.size = snprintf (key.data = buf, sizeof buf, "0%u", entidx++);
+       key.flags = 0;
+-      status = lookup (&key, result, buffer, buflen, errnop H_ERRNO_ARG
+-		       EXTRA_ARGS_VALUE);
++      status = lookup (&key, result, buffer, buflen H_ERRNO_ARG EXTRA_ARGS_VALUE);
+       if (status == NSS_STATUS_TRYAGAIN
+ #ifdef NEED_H_ERRNO
+ 	  && *herrnop == NETDB_INTERNAL
+ #endif
+-	  && *errnop == ERANGE)
++	  && errno == ERANGE)
+ 	/* Give the user a chance to get the same entry with a larger
+ 	   buffer.  */
+ 	--entidx;
+--- nss_db-compat/Makefile.am.compat	Tue Aug 15 16:18:16 2000
++++ nss_db-compat/Makefile.am	Wed Aug 16 12:33:23 2000
+@@ -6,7 +6,7 @@ AUTOMAKE_OPTIONS = gnu 1.4
+ VERSION = @VERSION@
+ 
+ # The library interface
+-INTERFACE = 2
++INTERFACE = 1
+ 
+ slibdir = @slibdir@
+ 
+--- nss_db-compat/Makefile.in.compat	Tue Aug 15 16:18:26 2000
++++ nss_db-compat/Makefile.in	Wed Aug 16 12:33:23 2000
+@@ -78,7 +78,7 @@ AUTOMAKE_OPTIONS = gnu 1.4
+ VERSION = @VERSION@
+ 
+ # The library interface
+-INTERFACE = 2
++INTERFACE = 1
+ 
+ slibdir = @slibdir@
+ 
+--- nss_db-compat/netgroup.h.compat	Mon Dec  8 03:33:09 1997
++++ nss_db-compat/netgroup.h	Wed Aug 16 12:39:54 2000
+@@ -65,6 +65,6 @@ extern int __internal_setnetgrent (const
+ extern void __internal_endnetgrent (struct __netgrent *datap);
+ extern int __internal_getnetgrent_r (char **hostp, char **userp,
+ 				     char **domainp, struct __netgrent *datap,
+-				     char *buffer, size_t buflen, int *errnop);
++				     char *buffer, size_t buflen);
+ 
+ #endif /* netgroup.h */
+--- nss_db-compat/files-parse.c.compat	Sun Jul 23 22:44:22 2000
++++ nss_db-compat/files-parse.c	Wed Aug 16 12:44:00 2000
+@@ -79,7 +79,7 @@ struct parser_data
+ 
+ /* The parser is defined in a different module.  */
+ extern int parse_line (char *line, struct STRUCTURE *result,
+-		       struct parser_data *data, size_t datalen, int *errnop
++		       struct parser_data *data, size_t datalen
+ 		       EXTRA_ARGS_DECL);
+ 
+ # define LINE_PARSER(EOLSET, BODY) /* Do nothing */
+@@ -91,7 +91,7 @@ extern int parse_line (char *line, struc
+ # define LINE_PARSER(EOLSET, BODY)					      \
+ parser_stclass int							      \
+ parse_line (char *line, struct STRUCTURE *result,			      \
+-	    struct parser_data *data, size_t datalen, int *errnop	      \
++	    struct parser_data *data, size_t datalen			      \
+ 	    EXTRA_ARGS_DECL)						      \
+ {									      \
+   ENTDATA_DECL (data)							      \
+@@ -160,7 +160,7 @@ parse_line (char *line, struct STRUCTURE
+ 
+ #  define TRAILING_LIST_PARSER						      \
+ {									      \
+-  char **list = parse_list (line, data, datalen, errnop);		      \
++  char **list = parse_list (line, data, datalen);			      \
+   if (list)								      \
+     result->TRAILING_LIST_MEMBER = list;				      \
+   else 									      \
+@@ -168,7 +168,7 @@ parse_line (char *line, struct STRUCTURE
+ }
+ 
+ static inline char **
+-parse_list (char *line, struct parser_data *data, size_t datalen, int *errnop)
++parse_list (char *line, struct parser_data *data, size_t datalen)
+ {
+   char *eol, **list, **p;
+ 
+@@ -195,7 +195,7 @@ parse_list (char *line, struct parser_da
+       if ((size_t) ((char *) &p[1] - (char *) data) > datalen)
+ 	{
+ 	  /* We cannot fit another pointer in the buffer.  */
+-	  *errnop = ERANGE;
++	  __set_errno(ERANGE);
+ 	  return NULL;
+ 	}
+       if (*line == '\0')
