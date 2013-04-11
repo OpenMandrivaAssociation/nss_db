@@ -30,8 +30,8 @@ Patch4:		nss_db-2.2-enoent.patch
 Patch5:		nss_db-2.2-initialize.patch
 Patch6:		nss_db-2.2.3pre1-CVE-2010-0826.diff
 Patch10:	nss_db-2.2-compat.patch
-BuildRequires:	db_nss-devel
-BuildRequires:	db-devel
+BuildRequires:	db_nss52-devel
+BuildRequires:	db52-devel
 %if !%{build_compat}
 Obsoletes:	%{name}-compat < %{version}-%{release}
 %endif
