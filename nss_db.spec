@@ -21,6 +21,7 @@ Group:		System/Libraries
 URL:		http://sources.redhat.com/glibc/
 Source:		ftp://sources.redhat.com/pub/glibc/releases/nss_db-%{arcver}.tar.bz2
 Source1:	makedb.man
+Source100:	nss_db.rpmlintrc
 Patch0:		nss_db-2.2.3pre1-external.patch
 Patch1:		nss_db-2.2.3pre1-dbopen.patch
 Patch2:		nss_db-2.2.3pre1-dbupgrade.patch
