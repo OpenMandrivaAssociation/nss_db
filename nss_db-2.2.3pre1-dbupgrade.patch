@@ -1,6 +1,6 @@
 diff -urN src/db-compat.c src/db-compat.c
---- src/db-compat.c	Mon Mar 26 15:34:53 2001
-+++ src/db-compat.c	Mon Mar 26 15:31:36 2001
+--- ./src/db-compat.c	Mon Mar 26 15:34:53 2001
++++ ./src/db-compat.c	Mon Mar 26 15:31:36 2001
 @@ -39,6 +39,10 @@
    if (err)
      return err;
