@@ -10,7 +10,7 @@
 Summary:	NSS library for DB
 Name:		nss_db
 Version:	2.2.3
-Release:	0.%{pre}.12
+Release:	0.%{pre}.14
 License:	GPLv2
 Group:		System/Libraries
 Url:		http://sources.redhat.com/glibc/
@@ -45,7 +45,7 @@ ln -s %{_includedir}/db_nss db_nss/include
 ln -s %{_libdir}/libdb_nss.so db_nss/lib/libdb.so
 
 %build
-%configure2_5x --with-db=$PWD/db_nss
+%configure --with-db=$PWD/db_nss
 make
 
 %install
