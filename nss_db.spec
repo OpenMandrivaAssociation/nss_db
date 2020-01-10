@@ -39,7 +39,7 @@ slow.
 
 %prep
 %setup -qn %{name}-%{arcver}
-%apply_patches
+%autopatch -p1
 mkdir -p db_nss/lib
 ln -s %{_includedir}/db_nss db_nss/include
 ln -s %{_libdir}/libdb_nss.so db_nss/lib/libdb.so
