@@ -13,7 +13,7 @@ Version:	2.2.3
 Release:	0.%{pre}.14
 License:	GPLv2
 Group:		System/Libraries
-Url:		http://sources.redhat.com/glibc/
+Url:		https://sources.redhat.com/glibc/
 Source0:	ftp://sources.redhat.com/pub/glibc/releases/nss_db-%{arcver}.tar.bz2
 Source1:	makedb.man
 Source100:	nss_db.rpmlintrc
