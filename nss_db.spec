@@ -24,6 +24,11 @@ Patch3:		nss_db-2.2-paths.patch
 Patch4:		nss_db-2.2-enoent.patch
 Patch5:		nss_db-2.2-initialize.patch
 Patch6:		nss_db-2.2.3pre1-CVE-2010-0826.diff
+BuildRequires:	autoconf
+BuildRequires:	automake
+BuildRequires:	libtool-base
+BuildRequires:	slibtool
+BuildRequires:	make
 BuildRequires:	db_nss52-devel
 BuildRequires:	db52-devel
 Requires:	make
